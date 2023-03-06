@@ -27,7 +27,7 @@ spec:
     spec:
       {{- include "exposeOidc.imagePullSecrets" . | nindent 6 }}
       containers:
-        - name: exposeOidc
+        - name: expose-oidc
           args:
             - --apiserver {{ .Values.exposeOidc.apiServer }}
             - --port {{ .Values.exposeOidc.port }}
@@ -40,7 +40,7 @@ spec:
             {{- toYaml .Values.exposeOidc.securityContext | nindent 12 }}
           ports:
             - name: http
-              containerPort: {{ .Values.exposeOidc.port }}}
+              containerPort: {{ int .Values.exposeOidc.port }}
               protocol: TCP
           {{- with .Values.exposeOidc.livenessProbe }}
           livenessProbe:
