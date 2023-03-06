@@ -1,5 +1,5 @@
 FROM scratch
 
-COPY ./expose-oidc /bin/expose-oidc
+COPY expose-oidc /
 
-ENTRYPOINT ["expose-oidc"]
+ENTRYPOINT ["/expose-oidc"]
