@@ -1,0 +1,11 @@
+---
+apiVersion: v2
+name: expose-oidc
+description: Expose OIDC for local Kubernets Cluster
+appVersion: 0.0.1
+
+type: application
+version: 0.0.1
+maintainers:
+  - name: Meno Abels
+    email: meno.abels@adviser.com

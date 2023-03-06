@@ -1,0 +1,41 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "exposeOidc.fullname" . -}}
+{{- $v1Ingress := .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
+{{- if $v1Ingress -}}
+apiVersion: networking.k8s.io/v1
+{{- else -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels: {{ include "exposeOidc.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+{{- end }}
+  tls:
+    - hosts:
+        - {{ .Values.exposeOidc.publicHost }}
+      secretName: {{ .secretName }}
+  rules:
+    - host: {{ .Values.exposeOidc.publicHost }}
+      http:
+        paths:
+          - path: "/"
+            backend:
+                  {{- if $v1Ingress }}
+              service:
+                name: expose-oidc
+                port:
+                  number: {{ .Values.exposeOidc.port }}
+            pathType: ImplementationSpecific
+                  {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ .Values.exposeOidc.port }}
+                  {{- end }}
+{{- end }}

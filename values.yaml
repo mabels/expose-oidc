@@ -1,0 +1,55 @@
+---
+## Docker image configuration
+##
+image:
+  repository: ghcr.io/mabels/expose-oidc
+  ## Tag to override with, will default to the application version.
+  ##
+  tag: latest
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  pullSecrets:
+  #   - myRegistryKeySecretName
+
+## Override part of the installed name, will still keep release name.
+##
+# nameOverride: ""
+
+## Override the full name of the installed chart.
+##
+# fullnameOverride: ""
+
+
+
+ingress:
+  enabled: true
+  annotations: {}
+  className: traefik
+  # hosts:
+  #   - host: auth.mydomain.io
+  #     paths:
+  #       - path: /
+  #         pathType: Prefix
+  # tls:
+  #   - secretName: expose-oidc-tls
+  #     hosts:
+  #       - auth.mydomain.io
+
+exposeOidc:
+  apiServer: https://kubernetes.default.svc
+  port: 80
+  publicHost: auth.mydomain.io
+  publicSchema: https
+  serviceAccountPath: /var/run/secrets/kubernetes.io/serviceaccount
+  service:
+    type: ClusterIP
+    port: 80
+  strategy: {}
+  tolerations: {}
+  affinity: {}
+  labels: {}
+  nodeSelector: {}
+  resources: {}

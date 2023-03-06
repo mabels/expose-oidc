@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "exposeOidc.fullname" . }}
+  labels: {{ include "exposeOidc.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    {{- toYaml .Values.exposeOidc.strategy | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "exposeOidc.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: exposeOidc
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.exposeOidc.annotations }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "exposeOidc.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: exposeOidc
+        {{- with .Values.exposeOidc.labels }}
+        {{ . | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "exposeOidc.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: exposeOidc
+          args:
+            - --apiserver {{ .Values.exposeOidc.apiServer }}
+            - --port {{ .Values.exposeOidc.port }}
+            - --publicUrl {{ .Values.exposeOidc.publicSchema }}://{{ .Values.exposeOidc.publicHost }}
+            - --serviceAccountPath {{ .Values.exposeOidc.serviceAccountPath }}
+          env:
+          image: "{{ .Values.image.repository }}:{{ include "exposeOidc.imageTag" . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.exposeOidc.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.exposeOidc.port }}}
+              protocol: TCP
+          {{- with .Values.exposeOidc.livenessProbe }}
+          livenessProbe:
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          {{- with .Values.exposeOidc.readinessProbe }}
+          readinessProbe:
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          {{- with .Values.exposeOidc.VolumeMounts }}
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.exposeOidc.resources | nindent 12 }}
+      {{- with .Values.exposeOidc.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.exposeOidc.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.exposeOidc.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
