@@ -21,7 +21,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.exposeOidc.publicHost }}
-      secretName: {{ .secretName }}
+      secretName: {{ .Values.exposeOidc.publicHost }}
   rules:
     - host: {{ .Values.exposeOidc.publicHost }}
       http:

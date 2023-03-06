@@ -29,11 +29,18 @@ spec:
       containers:
         - name: expose-oidc
           args:
-            - --apiserver {{ .Values.exposeOidc.apiServer }}
-            - --port {{ .Values.exposeOidc.port }}
-            - --publicUrl {{ .Values.exposeOidc.publicSchema }}://{{ .Values.exposeOidc.publicHost }}
-            - --serviceAccountPath {{ .Values.exposeOidc.serviceAccountPath }}
+            - "-apiserver"
+            - "{{ .Values.exposeOidc.apiServer }}"
+            - "-port"
+            - "{{ .Values.exposeOidc.port }}"
+            - "-publicUrl"
+            - "{{ .Values.exposeOidc.publicSchema }}://{{ .Values.exposeOidc.publicHost }}"
+            - "-serviceAccountPath"
+            - "{{ .Values.exposeOidc.serviceAccountPath }}"
           env:
+            {{- with .Values.exposeOidc.env }}
+            {{ . | toYaml | nindent 12 }}
+            {{- end }}
           image: "{{ .Values.image.repository }}:{{ include "exposeOidc.imageTag" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:

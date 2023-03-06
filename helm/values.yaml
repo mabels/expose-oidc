@@ -44,6 +44,7 @@ exposeOidc:
   publicHost: auth.mydomain.io
   publicSchema: https
   serviceAccountPath: /var/run/secrets/kubernetes.io/serviceaccount
+  env: []
   service:
     type: ClusterIP
     port: 80
