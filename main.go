@@ -148,7 +148,7 @@ func (rs *RuntimeState) fetchOpenIDConfiguration() ([]byte, error) {
 		purl.Path = "/openid/v1/jwks"
 		val["jwks_uri"] = purl.String()
 		rs.OpenIdConfiguration.Bytes, rs.OpenIdConfiguration.Error = json.Marshal(val)
-		rs.Jwks.Fetched = time.Now()
+		rs.OpenIdConfiguration.Fetched = time.Now()
 	}
 	return rs.OpenIdConfiguration.Bytes, rs.OpenIdConfiguration.Error
 }
